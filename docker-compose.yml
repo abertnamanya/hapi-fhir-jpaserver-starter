@@ -1,23 +1,33 @@
 version: "3"
 services:
-  hapi-fhir-jpaserver-start:
+  casiplus-hapi-fhir-jpaserver:
     build: .
-    container_name: hapi-fhir-jpaserver-start
+    container_name: casiplus-hapi-fhir-jpaserver
     restart: on-failure
     ports:
       - "8080:8080"
-  hapi-fhir-mysql:
-    image: mysql:latest
-    container_name: hapi-fhir-mysql
-    #https://dev.mysql.com/doc/refman/8.0/en/identifier-case-sensitivity.html
-    command: --lower_case_table_names=1
+
+  casiplus-hapi-fhir-db:
+    image: postgres:9.5
+    container_name: casiplus-hapi-fhir-db
+#    command: --lower_case_table_names=1
     restart: always
+    ports:
+      - '5432:5432'
     environment:
-      MYSQL_DATABASE: 'hapi'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'admin'
-      MYSQL_ROOT_PASSWORD: 'admin'
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data
+
     volumes:
-      - hapi-fhir-mysql:/var/lib/mysql
+      - casiplus-hapi-fhir-db:/var/lib/postgresql/data
+
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "casiplus_hapi", "-U", "admin" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+
 volumes:
-  hapi-fhir-mysql:
+  casiplus-hapi-fhir-db:
