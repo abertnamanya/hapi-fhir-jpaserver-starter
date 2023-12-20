@@ -4,16 +4,17 @@ services:
     build: .
     container_name: casiplus-hapi-fhir-jpaserver
     restart: on-failure
+    depends_on:
+      - casiplus-hapi-fhir-db
     ports:
-      - "8080:8080"
+      - ${SERVER_PORT}:8080
 
   casiplus-hapi-fhir-db:
     image: postgres:9.5
     container_name: casiplus-hapi-fhir-db
-#    command: --lower_case_table_names=1
     restart: always
     ports:
-      - '5432:5432'
+      - ${POSTGRES_DB_PORT}:5432
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

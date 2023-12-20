@@ -14,9 +14,9 @@ spring:
     check-location: false
     baselineOnMigrate: true
   datasource:
-    url: 'jdbc:postgresql://casiplus-hapi-fhir-db:5432/casiplus_hapi?'
-    username: admin
-    password: admin
+    url: ${DATASOURCE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driverClassName: org.postgresql.Driver
     max-active: 15
 
@@ -150,7 +150,7 @@ hapi:
     tester:
       home:
         name: Local Tester
-        server_address: 'http://localhost:8080/fhir'
+        server_address: 'http://casi.uwdigi.org/:8080/fhir'
         refuse_to_fetch_third_party_urls: false
         fhir_version: R4
       global:
@@ -198,11 +198,11 @@ hapi:
 #security:
 #  ignored: none
 keycloak:
-  auth-server-url: http://localhost:8180/auth/
-  realm: fhir-core
-  resource: fhir-core-server
+  auth-server-url: ${KEYCLOAK_SERVER_URL}
+  realm: ${REALM}
+  resource: ${RESOURCE}
   credentials:
-    secret: b7747a19-f72f-4906-8892-8438ce2492be
+    secret: ${SECRET}
   ssl-required: external
 #  use-resource-role-mappings: true,
 logging.level.org.springframework.web: trace
